@@ -176,6 +176,8 @@ class MpesaController extends Controller
         $get_booking_id = Mpesa::where('MerchantRequestID', $MerchantRequestID)->first();
         $booking_id = $get_booking_id->booking_id;
 
+        \Log::info("payment code:".$ResultCode);
+
         if ($ResultCode == 0) {
             $MpesaReceiptNumber = $data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value'];
             $phone = $data['Body']['stkCallback']['CallbackMetadata']['Item'][4]['Value'];
@@ -191,32 +193,7 @@ class MpesaController extends Controller
                     'ResultDesc' => $ResultDesc,
 
                 ]);
-
-            $update_booking_status = RoomBooking::where('id', $get_booking_id->booking_id)->update(
-                [
-                    'status' => 'paid'
-                ]
-            );
-
-
-
-            $get_room_details = RoomBooking::where('id', $get_booking_id->booking_id)->first();
-
-            $Propertyid = $get_room_details->PropertyId;
-            $RoomId = $get_room_details->RoomId;
-            $UserId = $get_room_details->UserId;
-            $url = $get_room_details->url;
-
-
-            $update_availability = Availability::updateOrCreate(
-                ['RoomId' => $RoomId],
-                ['available' => 'N'],
-            );
-
-
-            //send confirmation email
-            $send_email = new RoomBookingController;
-            $send_email = $send_email->sendBookingConfirmationMail($Propertyid, $RoomId, $UserId, $booking_id, $url);
+   
 
         } else {
             $savedata = Mpesa::where('MerchantRequestID', $MerchantRequestID)
@@ -224,30 +201,6 @@ class MpesaController extends Controller
                     'resultcode' => $ResultCode,
                     'ResultDesc' => $ResultDesc
                 ]);
-
-            $update_booking_status = RoomBooking::where('id', $get_booking_id->booking_id)->update(
-                [
-                    'status' => 'unpaid'
-                ]
-            );
-
-            $get_room_details = RoomBooking::where('id', $get_booking_id->booking_id)->first();
-
-            $Propertyid = $get_room_details->PropertyId;
-            $RoomId = $get_room_details->RoomId;
-            $UserId = $get_room_details->UserId;
-            $url = $get_room_details->url;
-
-
-
-
-
-            //send incomplete transaction email
-
-
-            $send_email = new RoomBookingController;
-            $send_email = $send_email->sendUnsuccessfulBookingMail($Propertyid, $RoomId, $UserId, $booking_id, $url);
-
 
         }
 
