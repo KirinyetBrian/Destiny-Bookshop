@@ -87,7 +87,7 @@ Route::group(['middleware' => ['locale', 'theme', 'currency']], function () {
 
     Route::prefix('api')->group(function () {
         Route::post('v1/lnmo_request', [MpesaController::class, 'lnmo_request']);
-        // Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
+        Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
         Route::post('v1/confirm', [MpesaController::class, 'confirm']);
         Route::post('v1/validate', [MpesaController::class, 'validate']);
     });
@@ -95,6 +95,6 @@ Route::group(['middleware' => ['locale', 'theme', 'currency']], function () {
 });
 
 
-Route::prefix('api')->group(function () {
-    Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
-});
+// Route::prefix('api')->group(function () {
+//     Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
+// });
