@@ -95,6 +95,3 @@ Route::group(['middleware' => ['locale', 'theme', 'currency']], function () {
 });
 
 
-Route::prefix('api')->group(function () {
-    Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
-});

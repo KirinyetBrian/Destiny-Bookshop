@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use Webkul\Shop\Http\Controllers\MpesaController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -12,3 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+    Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
