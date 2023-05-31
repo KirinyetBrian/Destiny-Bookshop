@@ -9,6 +9,9 @@ use Webkul\Checkout\Contracts\Cart as CartModel;
 use Webkul\Customer\Repositories\WishlistRepository;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\CartRule\Repositories\CartRuleCouponRepository;
+use webkul\Shop\src\Http\Controllers\MpesaController;
+use ACME\Mpesa\Models\Mpesa;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -24,8 +27,7 @@ class CartController extends Controller
         protected WishlistRepository $wishlistRepository,
         protected ProductRepository $productRepository,
         protected CartRuleCouponRepository $cartRuleCouponRepository
-    )
-    {
+    ) {
         $this->middleware('throttle:5,1')->only('applyCoupon');
 
         $this->middleware('customer')->only('moveToWishlist');
@@ -45,13 +47,13 @@ class CartController extends Controller
         $cart = Cart::getCart();
 
         $cart?->load('items.product.cross_sells');
-       
+
         $crossSellProductCount = core()->getConfigData('catalog.products.cart_view_page.no_of_cross_sells_products');
- 
+
         return view($this->_config['view'], [
             'cart' => $cart,
             'crossSellProducts' => $cart?->items
-                ->map(fn ($item) => $item->product->cross_sells)
+                ->map(fn($item) => $item->product->cross_sells)
                 ->collapse()
                 ->unique('id')
                 ->take($crossSellProductCount != "" ? $crossSellProductCount : 12),
@@ -68,7 +70,7 @@ class CartController extends Controller
     {
         try {
             if ($product = $this->productRepository->findOrFail($id)) {
-                if (! $product->visible_individually) {
+                if (!$product->visible_individually) {
                     return redirect()->back();
                 }
             }
@@ -85,7 +87,7 @@ class CartController extends Controller
 
             if ($customer = auth()->guard('customer')->user()) {
                 $this->wishlistRepository->deleteWhere([
-                    'product_id'  => $id,
+                    'product_id' => $id,
                     'customer_id' => $customer->id,
                 ]);
             }
@@ -104,7 +106,7 @@ class CartController extends Controller
                 'Shop CartController: ' . $e->getMessage(),
                 [
                     'product_id' => $id,
-                    'cart_id'    => cart()->getCart() ?? 0
+                    'cart_id' => cart()->getCart() ?? 0
                 ]
             );
 
@@ -206,9 +208,9 @@ class CartController extends Controller
                             'message' => trans('shop::app.checkout.total.coupon-already-applied'),
                         ]);
                     }
-    
+
                     Cart::setCouponCode($couponCode)->collectTotals();
-                  
+
                     if (Cart::getCart()->coupon_code == $couponCode) {
                         return response()->json([
                             'success' => true,
@@ -217,7 +219,7 @@ class CartController extends Controller
                     }
                 }
             }
-           
+
             return response()->json([
                 'success' => false,
                 'message' => trans('shop::app.checkout.total.invalid-coupon'),
@@ -231,6 +233,83 @@ class CartController extends Controller
             ]);
         }
     }
+
+
+    public function sendMpesaStkPush()
+    {
+        $couponCode = request()->get('code');
+
+        //  \Log::info( $couponCode );
+
+        try {
+            // if (strlen($couponCode)) {
+            //     $coupon = $this->cartRuleCouponRepository->findOneByField('code', $couponCode);
+
+            //     if ($coupon->cart_rule->status) {
+            //         if (Cart::getCart()->coupon_code == $couponCode) {
+            //             return response()->json([
+            //                 'success' => false,
+            //                 'message' => trans('shop::app.checkout.total.coupon-already-applied'),
+            //             ]);
+            //         }
+
+            //         Cart::setCouponCode($couponCode)->collectTotals();
+
+            //         if (Cart::getCart()->coupon_code == $couponCode) {
+            //             return response()->json([
+            //                 'success' => true,
+            //                 'message' => trans('shop::app.checkout.total.success-coupon'),
+            //             ]);
+            //         }
+            //     }
+            // }
+
+            $cart = Cart::getCart();
+
+            // \Log::info("grand total:".$cart->grand_total);
+            // \Log::info("cart_id:".$cart->id);
+
+            $stkpush = new \Webkul\Shop\Http\Controllers\MpesaController;
+
+            $amount = intval($cart->grand_total);
+
+            $mpesastkpush = $stkpush->lnmo_request($amount, $couponCode, $cart->id);
+
+             \Log::info("mpesastkpush:".$cart->id);
+
+            return response()->json([
+                'success' => true,
+                'response' => $mpesastkpush,
+                'cart_id' => $cart->id,
+                'message' => trans('shop::app.checkout.total.invalid-coupon'),
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => trans('shop::app.checkout.total.coupon-apply-issue'),
+            ]);
+        }
+    }
+
+    public function confirmMpesaPayments(Request $request)
+    {
+
+        \Log::info("confirming request:" . $request->merchant_request_id);
+        $confirm_payments = Mpesa::where('MerchantRequestID', $request->merchant_request_id)->first();
+
+        \Log::info("result_code:" . $confirm_payments);
+
+        return response()->json([
+            'success' => true,
+            'resultcode' => $confirm_payments->resultcode,
+        ], 200);
+
+
+    }
+
+
 
     /**
      * Remove applied coupon from the cart.
@@ -256,7 +335,7 @@ class CartController extends Controller
      */
     private function onFailureAddingToCart($result): bool
     {
-        if (! is_array($result)) {
+        if (!is_array($result)) {
             return false;
         }
 

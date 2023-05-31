@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9048b58b919427341622bee27567124b",
+    "content-hash": "bd5072d7e3ab2962feabff778be679d1",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -96,6 +96,52 @@
                 }
             ],
             "time": "2023-02-27T10:27:10+00:00"
+        },
+        {
+            "name": "bagisto/bagisto-package-generator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bagisto/bagisto-package-generator.git",
+                "reference": "73173cf8a517b8722fd9aa24c61013d9a837b5e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bagisto/bagisto-package-generator/zipball/73173cf8a517b8722fd9aa24c61013d9a837b5e5",
+                "reference": "73173cf8a517b8722fd9aa24c61013d9a837b5e5",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Webkul\\PackageGenerator\\Providers\\PackageGeneratorServiceProvider"
+                    ],
+                    "aliases": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webkul\\PackageGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jitendra Singh",
+                    "email": "jitendra@webkul.com"
+                }
+            ],
+            "description": "Bagisto Package Generator",
+            "support": {
+                "issues": "https://github.com/bagisto/bagisto-package-generator/issues",
+                "source": "https://github.com/bagisto/bagisto-package-generator/tree/master"
+            },
+            "time": "2021-03-22T06:30:08+00:00"
         },
         {
             "name": "bagisto/laravel-datafaker",
@@ -12751,6 +12797,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "bagisto/bagisto-package-generator": 20,
         "bagisto/laravel-datafaker": 15,
         "codeception/codeception": 20,
         "codeception/module-laravel": 20
@@ -12769,5 +12816,5 @@
         "ext-tokenizer": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }

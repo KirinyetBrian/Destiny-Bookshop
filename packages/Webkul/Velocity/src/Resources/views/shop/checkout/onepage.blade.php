@@ -11,7 +11,8 @@
 @push('scripts')
     <script type="text/javascript" src="{{ asset('vendor/webkul/ui/assets/js/ui.js') }}"></script>
 
-    @include('shop::checkout.cart.coupon')
+    {{-- @include('shop::checkout.cart.coupon') --}}
+    @include('shop::checkout.cart.mpesa')
 
     <script type="text/x-template" id="checkout-template">
         <div class="container">
@@ -434,6 +435,7 @@
                                 }
                             });
                         }
+                        
                         this.$http.post("{{ route('shop.checkout.save_address') }}", this.address)
                             .then(response => {
                                 this.disable_button = false;
@@ -508,7 +510,8 @@
                         if (this.isCheckPayment) {
                             this.isCheckPayment = false;
 
-                            this.$http.post("{{ route('shop.checkout.save_payment') }}", {'payment': this.selected_payment_method})
+                            this.$http.post("{{ route('shop.checkout.save_payment') }}", 
+                            {'payment': this.selected_payment_method})
                             .then(response => {
                                 this.isCheckPayment = true;
                                 this.disable_button = false;

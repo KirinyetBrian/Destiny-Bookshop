@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Bagisto'),
+    'name' => env('APP_NAME', 'Destiny'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'Asia/Kolkata'),
+    'timezone' => env('APP_TIMEZONE', 'Africa/Nairobi'),
 
     /*
     |--------------------------------------------------------------------------
@@ -132,7 +132,7 @@ return [
     |
     */
 
-    'currency' => env('APP_CURRENCY', 'USD'),
+    'currency' => env('APP_CURRENCY', 'Ksh'),
 
     /*
     |--------------------------------------------------------------------------
@@ -222,7 +222,8 @@ return [
         Webkul\DebugBar\Providers\DebugBarServiceProvider::class,
         Webkul\Marketing\Providers\MarketingServiceProvider::class,
         Webkul\Notification\Providers\NotificationServiceProvider::class,
-        Webkul\Sitemap\Providers\SitemapServiceProvider::class
+        Webkul\Sitemap\Providers\SitemapServiceProvider::class,
+        ACME\Mpesa\Providers\MpesaServiceProvider::class,
     ])->toArray(),
 
     /*

@@ -9,8 +9,8 @@
 @endsection
 
 @push('scripts')
-    @include('shop::checkout.cart.coupon')
-
+    {{-- @include('shop::checkout.cart.coupon') --}}
+    @include('shop::checkout.cart.mpesa')
     <script type="text/x-template" id="checkout-template">
         <div id="checkout" class="checkout-process">
             <div class="col-main">
@@ -353,7 +353,8 @@
 
                     this.disable_button = true;
 
-                    this.$http.post("{{ route('shop.checkout.save_payment') }}", {'payment': this.selected_payment_method})
+                    this.$http.post("{{ route('shop.checkout.save_payment') }}", 
+                    {'payment': this.selected_payment_method})
                     .then(function(response) {
                         self.disable_button = false;
 

@@ -587,6 +587,7 @@ return [
             'new-address'         => 'Add New Address',
             'save_as_address'     => 'Save this address',
             'apply-coupon'        => 'Apply Coupon',
+            'apply-mpesa-number'  => 'Pay with Mpesa',
             'amt-payable'         => 'Amount Payable',
             'got'                 => 'Got',
             'free'                => 'Free',
@@ -601,6 +602,7 @@ return [
             'password'            => 'Password',
             'login-exist-message' => 'You already have an account with us, Sign in or continue as guest.',
             'enter-coupon-code'   => 'Enter Coupon Code',
+            'enter-mpesa-number'     =>'Enter Mpesa number'
         ],
 
         'total' => [

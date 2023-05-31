@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\Shop\Http\Controllers\CartController;
 use Webkul\Shop\Http\Controllers\OnepageController;
+use Webkul\Shop\Http\Controllers\MpesaController;
 
 Route::group(['middleware' => ['locale', 'theme', 'currency']], function () {
     /**
@@ -34,11 +35,23 @@ Route::group(['middleware' => ['locale', 'theme', 'currency']], function () {
      * Coupon routes.
      */
     Route::post('checkout/cart/coupon', [CartController::class, 'applyCoupon'])->name('shop.checkout.cart.coupon.apply');
-
     Route::delete('checkout/cart/coupon', [CartController::class, 'removeCoupon'])->name('shop.checkout.coupon.remove.coupon');
 
     /**
      * Checkout routes.
+     */
+
+
+
+    /**
+     * Mpesa routes
+     */
+
+    Route::post('checkout/cart/mpesastkpush', [CartController::class, 'sendMpesaStkPush'])->name('shop.checkout.cart.mpesa.apply');
+    Route::post('checkout/cart/confirm-mpesa-payments', [CartController::class, 'confirmMpesaPayments'])->name('shop.checkout.cart.confirm-mpesa');
+
+    /**
+     * Mpesa routes
      */
     Route::get('checkout/onepage', [OnepageController::class, 'index'])->defaults('_config', [
         'view' => 'shop::checkout.onepage',
@@ -71,4 +84,17 @@ Route::group(['middleware' => ['locale', 'theme', 'currency']], function () {
          */
         Route::post('/customer/checkout/login', [OnepageController::class, 'loginForCheckout'])->name('shop.customer.checkout.login');
     });
+
+    Route::prefix('api')->group(function () {
+        Route::post('v1/lnmo_request', [MpesaController::class, 'lnmo_request']);
+        // Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
+        Route::post('v1/confirm', [MpesaController::class, 'confirm']);
+        Route::post('v1/validate', [MpesaController::class, 'validate']);
+    });
+
+});
+
+
+Route::prefix('api')->group(function () {
+    Route::post('v1/lnmo_callback', [MpesaController::class, 'lnmo_callback']);
 });

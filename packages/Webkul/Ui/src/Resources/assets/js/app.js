@@ -33,7 +33,8 @@ import SlugifyTarget from './directives/slugify-target';
  * Configs.
  */
 VTooltip.options.defaultDelay = 0;
-Vue.config.productionTip = false;
+Vue.config.devtools = true;
+Vue.config.productionTip = true;
 
 /**
  * Directives.
